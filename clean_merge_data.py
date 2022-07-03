@@ -36,6 +36,19 @@ new_df['R_JPM']= new_df['log_Return']-new_df['log_Rf']
 new_df['R_MARKET']= new_df['log_SP500']-new_df['log_Rf']
 new_df
 
+# APT
+APT = pd.read_csv(my_dict + 'FF3Month_dail.csv')
+APT.columns= ['Date','Mkt-RF','SMB','HML','RF']
+APT=APT.iloc[22746:] 
+APT
+
+APT['Date'] = APT['Date'].astype(str)
+for row_index, row in APT.iterrows():
+    value = APT['Date'][row_index]
+    APT['Date'][row_index] = pd.to_datetime(parse(value)).date()
+APT    
+# APT.sort_values(by="Date",inplace=True, ascending=True)
+
 # clean inf
 new_df = new_df.replace([np.inf, -np.inf], np.nan).dropna()
 new_df
