@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
+from dateutil.parser import parse
 
-# change here
+# -------- change here
 my_dict = 'E:\\M-22-T2\\ECON5206 FIN econ\\case1\\'
 
-# read data
+# -------- read data
 
 df_JPM = pd.read_csv(my_dict + 'JPM_1206_2206.csv')
 df_JPM.sort_values(by="Date",inplace=True, ascending=True)
@@ -29,26 +30,32 @@ SP500['log_SP500'] = 100*np.log(SP500['SP500']/SP500['SP500'].shift(1))
 SP500=SP500.dropna()
 # SP500
 
-# merge
-new_df = pd.merge(df_JPM,Tbill, on='Date')
-new_df = pd.merge(new_df,SP500, on='Date')
-new_df['R_JPM']= new_df['log_Return']-new_df['log_Rf']
-new_df['R_MARKET']= new_df['log_SP500']-new_df['log_Rf']
-new_df
-
-# APT
+# -------- APT
 APT = pd.read_csv(my_dict + 'FF3Month_dail.csv')
 APT.columns= ['Date','Mkt-RF','SMB','HML','RF']
 APT=APT.iloc[22746:] 
-APT
+# APT
 
 APT['Date'] = APT['Date'].astype(str)
 for row_index, row in APT.iterrows():
     value = APT['Date'][row_index]
     APT['Date'][row_index] = pd.to_datetime(parse(value)).date()
+APT['Date'] = APT['Date'].astype(str)
 APT    
 # APT.sort_values(by="Date",inplace=True, ascending=True)
 
-# clean inf
+
+# -------- merge
+
+new_df = pd.merge(df_JPM,Tbill, on='Date')
+new_df = pd.merge(new_df,SP500, on='Date')
+new_df = pd.merge(new_df,APT, on='Date')
+new_df['R_JPM']= new_df['log_Return']-new_df['log_Rf']
+new_df['R_MARKET']= new_df['log_SP500']-new_df['log_Rf']
+# new_df
+
+# -------- clean inf
 new_df = new_df.replace([np.inf, -np.inf], np.nan).dropna()
 new_df
+
+# new_df.to_csv(dict + 'merge.csv')
