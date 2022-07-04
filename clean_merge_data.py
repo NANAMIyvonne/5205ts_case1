@@ -58,4 +58,4 @@ new_df['R_MARKET']= new_df['log_SP500']-new_df['log_Rf']
 new_df = new_df.replace([np.inf, -np.inf], np.nan).dropna()
 new_df
 
-# new_df.to_csv(dict + 'merge.csv')
+# new_df.to_csv(my_dict + 'merge.csv')
